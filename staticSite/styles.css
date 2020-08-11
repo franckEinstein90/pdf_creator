@@ -1,0 +1,30 @@
+body{
+    display:flex; 
+    flex-direction:column; 
+    margin:0px;
+    min-height:100%;  
+}
+
+#header{
+    height:40px; 
+    width:100%; 
+    background-color:yellow; 
+}
+
+#content1{
+    display:flex;
+    flex-wrap:wrap;  
+    align-content:space-between; 
+    background-color:red; 
+}
+#content1 > img{
+    margin-left:20px; 
+}
+#content2{
+    display:flex; 
+    background-color:green; 
+}
+
+#content2 > img{
+    margin-left:30px; 
+}

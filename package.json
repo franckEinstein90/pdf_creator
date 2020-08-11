@@ -1,0 +1,17 @@
+{
+  "name": "pdf_creator",
+  "version": "1.0.0",
+  "description": "cli tool to create pdf from static web pages",
+  "bin": "./index.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Franck Binard",
+  "license": "ISC",
+  "dependencies": {
+    "@adobe/documentservices-pdftools-node-sdk": "^1.1.0",
+    "commander": "^6.0.0",
+    "is-zip-file": "^1.0.2"
+  }
+}
