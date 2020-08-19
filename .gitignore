@@ -3,4 +3,5 @@ pdftools-api-credentials.json
 private.key
 .vscode
 *.swp
+staticHTMLPage
 

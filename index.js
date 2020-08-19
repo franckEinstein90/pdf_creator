@@ -1,49 +1,41 @@
 #!/usr/bin/env node
 "use strict"; 
-const checkInputFile = require('./src/checkArgs').checkInputFile; 
-const checkOutputFile = require('./src/checkArgs').checkOutputFile; 
+const checkInputFile = require('./src/processInputArgs').checkInputFile; 
+const checkOutputFile = require('./src/processOutputArgs').checkOutputFile; 
+const parseArgs = require('./src/parseArgs').parseArgs;
 
-let outErrors = (function(){
-    return {
-        InputFileNotFound: "Input zip file couldn't be found"
-    }
-})(); 
+const { parse } = require('path');
+const path = require('path')
 
-const inOut = {
-    inputFile: null, 
-    outputFile: null
-}
-let app = {
+const app = {
     path: __dirname
 }
+
+
 try {
-    require('./src/pdf.js').initPDFTools(app)
-    if(process.argv.length < 3){
+    parseArgs(app, process.argv)
+    if(app.options.outputPath === undefined || app.options.inputPath === undefined){
         throw "invalid arguments"
     }
+    require('./src/pdf.js').initPDFTools(app) //init for adobeSDK
 } catch(err){
     console.log(err)
     process.exit(1)
 }
-
-checkInputFile(process.argv[2])
-.then( result =>{
-    if(!result){
+checkInputFile(app)
+.then( app =>{
+    if(!app.options.inputZipFile){
         throw "Unable to find input zip file"
     }
-    return checkOutputFile(process.argv[3])
+    return checkOutputFile(app)
 })
-.then( stat => {
-        inOut.inputFile = process.argv[2]
-        inOut.outputFile = process.argv[3]
-        return app.pdfTools.createFromLocalFile(inOut.inputFile)
-    })
-.then( result =>{
-        result.saveAsFile(inOut.outputFile)
-        console.log("pdf successfully created")
-        process.exit(0)
-    })
+.then(_ => app.pdfTools.createFromLocalFile())
+.then( app => app.outStream.saveAsFile(app.options.outputPath))
+.then( result => {
+    console.log("pdf successfully created")
+    process.exit(0)
+})
 .catch(err => {
         console.log("Operation not successful")
         console.log(err); 
-    })
+})
