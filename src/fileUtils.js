@@ -36,13 +36,12 @@ const fileUtils = (function(){
             })
         }, 
         delete : (filePath) => {
-            console.log("File exists, deleting."); 
+            console.log(`Deleting ${filePath}`); 
             return new Promise((resolve, reject)=>{
                 fs.unlink(filePath, (err)=>{
-                    if(err) {
-                        return reject( "Unable to delete file")
-                    }
-                    return resolve(true)
+                    return err
+                        ? reject( `Unable to delete ${filePath}`)
+                        : resolve(true)
                 })
             })
         }

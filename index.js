@@ -3,7 +3,7 @@
 const checkInputFile = require('./src/processInputArgs').checkInputFile; 
 const checkOutputFile = require('./src/processOutputArgs').checkOutputFile; 
 const parseArgs = require('./src/parseArgs').parseArgs;
-
+const fileUtils = require('./src/fileUtils').fileUtils
 const { parse } = require('path');
 const path = require('path')
 
@@ -32,9 +32,17 @@ checkInputFile(app)
 .then(_ => app.pdfTools.createFromLocalFile())
 .then( app => app.outStream.saveAsFile(app.options.outputPath))
 .then( result => {
+    if(app.options.keepZip === false){ //delete the zip file
+       return fileUtils.delete(app.options.inputZipFile) 
+    } else {
+        return 0
+    }
+})
+.then( _ => {
     console.log("pdf successfully created")
     process.exit(0)
 })
+
 .catch(err => {
         console.log("Operation not successful")
         console.log(err); 
