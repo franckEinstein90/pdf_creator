@@ -13,6 +13,7 @@
     "@adobe/documentservices-pdftools-node-sdk": "^1.1.0",
     "archiver": "^5.0.0",
     "command-line-args": "^5.1.1",
+    "command-line-usage": "^6.1.0",
     "commander": "^6.0.0",
     "is-zip-file": "^1.0.2"
   }

@@ -38,7 +38,6 @@ const convertFolderToZipFile = function(inputFolderPath){
     })
 }
 
-
 const checkInputFile = async function( app ){
     return fileUtils.exists(app.options.inputPath)
     .then( result => {

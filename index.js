@@ -1,5 +1,12 @@
 #!/usr/bin/env node
+
+/*******************************************************************
+ * 
+ * 
+ ******************************************************************/
 "use strict"; 
+/******************************************************************/
+
 const checkInputFile = require('./src/processInputArgs').checkInputFile; 
 const checkOutputFile = require('./src/processOutputArgs').checkOutputFile; 
 const parseArgs = require('./src/parseArgs').parseArgs;
@@ -8,14 +15,20 @@ const { parse } = require('path');
 const path = require('path')
 
 const app = {
-    path: __dirname
+    path: __dirname, 
+    errors: {
+        invalidArgs : "Invalid Arguments"
+    }
 }
 
 
 try {
     parseArgs(app, process.argv)
-    if(app.options.outputPath === undefined || app.options.inputPath === undefined){
-        throw "invalid arguments"
+    if(app.options.help){
+        app.options.printUsage()
+    }
+    if(!app.options.outputPath || !app.options.inputPath ){
+        throw app.errors.invalidArgs 
     }
     require('./src/pdf.js').initPDFTools(app) //init for adobeSDK
 } catch(err){
@@ -29,7 +42,7 @@ checkInputFile(app)
     }
     return checkOutputFile(app)
 })
-.then(_ => app.pdfTools.createFromLocalFile())
+.then( _ => app.pdfTools.createFromLocalFile())
 .then( app => app.outStream.saveAsFile(app.options.outputPath))
 .then( result => {
     if(app.options.keepZip === false){ //delete the zip file
@@ -44,6 +57,10 @@ checkInputFile(app)
 })
 
 .catch(err => {
+    if(err === app.errors.invalidArgs){
+        app.options.printUsage()
+    } else {
         console.log("Operation not successful")
         console.log(err); 
+    }
 })
