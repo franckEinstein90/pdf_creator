@@ -14,19 +14,20 @@ const isValidInputFolder = async function(path){
     })
 }
 
-const convertFolderToZipFile = function(inputFolderPath){  
+const convertFolderToZipFile = function( app ){  
+    const inputFolderPath = app.options.inputPath; 
     return isValidInputFolder(inputFolderPath)
     .then(resultCheck => {
         if(resultCheck === false) throw "Invalid folder"
         let zipFilePath = `${inputFolderPath.replace(/[\/\\]$/,"")}.zip` 
-        console.log(`creating new zip file at ${zipFilePath}`)
+        app.report(`creating new zip file at ${zipFilePath}`)
         return new Promise((resolve, reject)=>{
             let output = fs.createWriteStream(zipFilePath)
             output.on('close',_ => {
-                console.log("finished creating zip source file")
+                app.report("finished creating zip source file")
                 return resolve(zipFilePath)
             })
-            output.on('end', _ => console.log("finished reading source info"))
+            output.on('end', _ => app.report("finished reading source info"))
             let archive = archiver('zip', {
                 zlib: {level:9}
             })
@@ -50,7 +51,7 @@ const checkInputFile = async function( app ){
             return true
         }
         if(fileType === fileUtils.folder) {
-            return convertFolderToZipFile(app.options.inputPath)
+            return convertFolderToZipFile(app )
             .then(validatedZipFile => {
                 app.options.inputZipFile = validatedZipFile
                 return app 

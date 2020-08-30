@@ -36,7 +36,6 @@ const fileUtils = (function(){
             })
         }, 
         delete : (filePath) => {
-            console.log(`Deleting ${filePath}`); 
             return new Promise((resolve, reject)=>{
                 fs.unlink(filePath, (err)=>{
                     return err

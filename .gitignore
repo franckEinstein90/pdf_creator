@@ -1,7 +1,9 @@
 node_modules
 pdftools-api-credentials.json
 private.key
+resume
 .vscode
 *.swp
 staticHTMLPage
+.gitignore
 
