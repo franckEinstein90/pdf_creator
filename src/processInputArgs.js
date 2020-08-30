@@ -18,7 +18,8 @@ const convertFolderToZipFile = function(inputFolderPath){
     return isValidInputFolder(inputFolderPath)
     .then(resultCheck => {
         if(resultCheck === false) throw "Invalid folder"
-        let zipFilePath = `${inputFolderPath}.zip` 
+        let zipFilePath = `${inputFolderPath.replace(/[\/\\]$/,"")}.zip` 
+        console.log(`creating new zip file at ${zipFilePath}`)
         return new Promise((resolve, reject)=>{
             let output = fs.createWriteStream(zipFilePath)
             output.on('close',_ => {

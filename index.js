@@ -39,6 +39,8 @@ checkInputFile(app)
 .then( app =>{
     if(!app.options.inputZipFile){
         throw "Unable to find input zip file"
+    } else {
+        console.log(`Using input zip file at ${app.options.inputZipFile}`)
     }
     return checkOutputFile(app)
 })
