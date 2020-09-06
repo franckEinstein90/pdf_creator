@@ -14,21 +14,25 @@ const isValidInputFolder = async function(path){
     })
 }
 
-const convertFolderToZipFile = function( app ){  
+const convertFolderToZipFile = function( app ){ 
+
     const inputFolderPath = app.options.inputPath; 
     return isValidInputFolder(inputFolderPath)
     .then(resultCheck => {
         if(resultCheck === false) throw "Invalid folder"
-        let zipFilePath = `${inputFolderPath.replace(/[\/\\]$/,"")}.zip` 
-        app.report(`creating new zip file at ${zipFilePath}`)
+        const zipFilePath = `${inputFolderPath.replace(/[\/\\]$/,"")}.zip` 
+        app.report(`Creating new zip source file at ${zipFilePath}`)
+
         return new Promise((resolve, reject)=>{
-            let output = fs.createWriteStream(zipFilePath)
+
+            const output = fs.createWriteStream(zipFilePath)
             output.on('close',_ => {
-                app.report("finished creating zip source file")
+                app.report(`\tCreated new zip source file ${zipFilePath}`)
                 return resolve(zipFilePath)
             })
-            output.on('end', _ => app.report("finished reading source info"))
-            let archive = archiver('zip', {
+            output.on('end', _ => app.report("Finished reading source info"))
+
+            const archive = archiver('zip', {
                 zlib: {level:9}
             })
             archive.on('warning', err => console.log(err))
@@ -41,15 +45,14 @@ const convertFolderToZipFile = function( app ){
 }
 
 const checkInputFile = async function( app ){
-    return fileUtils.exists(app.options.inputPath)
+
+    return fileUtils.exists( app.options.inputPath )
     .then( result => {
         if(!result) throw "Unable to find source file/folder"
         return fileUtils.fileType(app.options.inputPath)
     })
     .then( fileType => {
-        if(fileType === fileUtils.zip) {
-            return true
-        }
+        if(fileType === fileUtils.zip) return true
         if(fileType === fileUtils.folder) {
             return convertFolderToZipFile(app )
             .then(validatedZipFile => {

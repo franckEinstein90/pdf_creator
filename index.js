@@ -9,8 +9,8 @@
 
 const checkInputFile = require('./src/processInputArgs').checkInputFile; 
 const checkOutputFile = require('./src/processOutputArgs').checkOutputFile; 
-const parseArgs = require('./src/parseArgs').parseArgs;
-const fileUtils = require('./src/fileUtils').fileUtils
+
+const fileUtils = require('./src/fileUtils').fileUtils; 
 const { parse } = require('path');
 const path = require('path')
 
@@ -21,20 +21,7 @@ const app = {
     }
 }
 
-
-try {
-    parseArgs(app, process.argv)
-    if(app.options.help){
-        app.options.printUsage()
-    }
-    if(!app.options.outputPath || !app.options.inputPath ){
-        throw app.errors.invalidArgs 
-    }
-    require('./src/pdf.js').initPDFTools(app) //init for adobeSDK
-} catch(err){
-    console.log(err)
-    process.exit(1)
-}
+require('./src/init.js').initApp( app ); 
 checkInputFile(app)
 .then( app =>{
     if(!app.options.inputZipFile){
@@ -44,15 +31,21 @@ checkInputFile(app)
     }
     return checkOutputFile(app)
 })
-.then( _ => app.pdfTools.createFromLocalFile())
-.then( app => app.outStream.saveAsFile(app.options.outputPath))
-.then( result => {
+
+.then( app.pdfTools.createFromLocalFile )
+.then( app => {
+    app.outStream.saveAsFile( app.options.outputPath )
+    return app
+})
+
+.then( app => {
     if(app.options.keepZip === false){ //delete the zip file
        return fileUtils.delete(app.options.inputZipFile) 
     } else {
         return 0
     }
 })
+
 .then( _ => {
     console.log("pdf successfully created")
     process.exit(0)

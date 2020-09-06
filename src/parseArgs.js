@@ -36,7 +36,7 @@ const sections = [
   ]
 const usage = commandLineUsage(sections)
 
-const parseArgs = function(app){
+const parseArgs = function( app ){
     const options = commandLineArgs( optionDefinitions ); 
     options.keepZip = options.keepZip || false; //by default, delete the intermediatry zip file
     options.verbose = options.verbose || false; //by default, verbose if off

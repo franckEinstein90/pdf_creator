@@ -2,11 +2,12 @@
 const PDFToolsSdk = require('@adobe/documentservices-pdftools-node-sdk'); 
 const path = require("path");
 
-
-const setCustomOptions = (htmlToPDFOperation) => {
-    // Define the page layout, in this case an 8 x 11.5 inch page (effectively portrait orientation).
+const setCustomOptions = (htmlToPDFOperation, app) => {
+    // Define the page layout, 
+    let defaultPageSize = app.options.defaultPageSize || [8, 11.5]
+    app.report(`Creating file in format '${defaultPageSize.join(' x ')}'\n`); 
     const pageLayout = new PDFToolsSdk.CreatePDF.options.PageLayout();
-    pageLayout.setPageSize(8, 11.5);
+    pageLayout.setPageSize(...defaultPageSize);
 
     // Set the desired HTML-to-PDF conversion options.
     const htmlToPdfOptions = new PDFToolsSdk.CreatePDF.options.html.CreatePDFFromHtmlOptions.Builder()
@@ -17,18 +18,21 @@ const setCustomOptions = (htmlToPDFOperation) => {
 };
 
 const pdfTools = function( app ){
-    let adobeApiCredentialsPath = app.options.adobeApiCredentialsPath || "pdftools-api-credentials.json"
-    let credentials =  PDFToolsSdk.Credentials
-    .serviceAccountCredentialsBuilder()
-    .fromFile(path.join(app.path, adobeApiCredentialsPath))
-    .build();    // Create an ExecutionContext using credentials and create a new operation instance.
+
+    const adobeApiCredentialsPath = app.options.adobeApiCredentialsPath || "pdftools-api-credentials.json"; 
+    const credentials =  PDFToolsSdk.Credentials
+        .serviceAccountCredentialsBuilder()
+        .fromFile(path.join(app.path, adobeApiCredentialsPath))
+        .build();    // Create an ExecutionContext using credentials and create a new operation instance.
+
     const executionContext = PDFToolsSdk.ExecutionContext.create(credentials)
     const htmlToPDFOperation = PDFToolsSdk.CreatePDF.Operation.createNew();
+
     return {
         createFromLocalFile: function(){
             const input = PDFToolsSdk.FileRef.createFromLocalFile(app.options.inputZipFile)
             htmlToPDFOperation.setInput(input); 
-            setCustomOptions(htmlToPDFOperation);
+            setCustomOptions(htmlToPDFOperation, app );
             return htmlToPDFOperation.execute(executionContext)
             .then( outStream => {
                 app.outStream = outStream
