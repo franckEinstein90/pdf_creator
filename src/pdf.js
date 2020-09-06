@@ -3,6 +3,7 @@ const PDFToolsSdk = require('@adobe/documentservices-pdftools-node-sdk');
 const path = require("path");
 
 const setCustomOptions = (htmlToPDFOperation, app) => {
+
     // Define the page layout, 
     let defaultPageSize = app.options.defaultPageSize || [8, 11.5]
     app.report(`Creating file in format '${defaultPageSize.join(' x ')}'\n`); 
@@ -14,8 +15,10 @@ const setCustomOptions = (htmlToPDFOperation, app) => {
         .includesHeaderFooter(false)
         .withPageLayout(pageLayout)
         .build();
+
     htmlToPDFOperation.setOptions(htmlToPdfOptions);
-};
+
+}
 
 const pdfTools = function( app ){
 

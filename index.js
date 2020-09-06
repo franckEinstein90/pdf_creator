@@ -23,27 +23,18 @@ const app = {
 
 require('./src/init.js').initApp( app ); 
 checkInputFile(app)
+
 .then( app =>{
-    if(!app.options.inputZipFile){
-        throw "Unable to find input zip file"
-    } else {
-        console.log(`Using input zip file at ${app.options.inputZipFile}`)
-    }
-    return checkOutputFile(app)
+    if( app.options.inputZipFile === false ) throw "Unable to find or create input zip file"
+    app.report(`\tUsing input zip file ${app.options.inputZipFile}`)
+    return checkOutputFile( app )
 })
 
 .then( app.pdfTools.createFromLocalFile )
 .then( app => app.outStream.saveAsFile( app.options.outputPath ) ) 
+.then( _ => app.options.keepZip ? 0 : fileUtils.delete(app.options.inputZipFile))
 .then( _ => {
-    if(app.options.keepZip === false){ //delete the zip file
-       return fileUtils.delete(app.options.inputZipFile) 
-    } else {
-        return 0
-    }
-})
-
-.then( _ => {
-    console.log("pdf successfully created")
+    app.report(`\tPDF file ${app.options.outputPath} successfully created`)
     process.exit(0)
 })
 
