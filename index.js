@@ -33,12 +33,8 @@ checkInputFile(app)
 })
 
 .then( app.pdfTools.createFromLocalFile )
-.then( app => {
-    app.outStream.saveAsFile( app.options.outputPath )
-    return app
-})
-
-.then( app => {
+.then( app => app.outStream.saveAsFile( app.options.outputPath ) ) 
+.then( _ => {
     if(app.options.keepZip === false){ //delete the zip file
        return fileUtils.delete(app.options.inputZipFile) 
     } else {
