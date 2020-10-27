@@ -1,4 +1,5 @@
-# pdfKreater
+# pdfCreate
+
 is a pdf cli tool that produces pdf files from static web sites. It takes a folder that contains an index.html file and other site assets as input, and outputs that file in its pdf version
 
 pdfKreater uses Adobe Document SDK, which requires credentials that can be obtained for free this address: https://www.adobe.io/apis/documentcloud/dcsdk/gettingstarted.html
